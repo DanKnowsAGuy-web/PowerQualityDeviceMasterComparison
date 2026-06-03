@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Power Quality Device Comparison — Energy Plus</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:        #0D1B2E;
+    --navy-mid:    #112238;
+    --navy-light:  #162944;
+    --navy-border: #1e3350;
+    --navy-border2:#243d60;
+    --gold:        #C9A84C;
+    --gold-light:  #E2C478;
+    --gold-dark:   #8a6f2e;
+    --gold-bg:     rgba(201,168,76,0.08);
+    --copper:      #B87333;
+    --amber:       #D4863A;
+    --amber-bg:    rgba(212,134,58,0.08);
+    --white:       #F5F2EC;
+    --body:        #EAE6DE;
+    --muted:       #C0BAB0;
+    --dim:         #9A9488;
+    --H-color:     #4CAF7D;
+    --H-bg:        rgba(76,175,125,0.12);
+    --H-border:    rgba(76,175,125,0.35);
+    --M-color:     #C9A84C;
+    --M-bg:        rgba(201,168,76,0.10);
+    --M-border:    rgba(201,168,76,0.35);
+    --L-color:     #C09850;
+    --L-bg:        rgba(154,120,64,0.14);
+    --L-border:    rgba(154,120,64,0.35);
+    --NA-color:    #8A8478;
+    --NA-bg:       rgba(107,101,88,0.18);
+    --NA-border:   rgba(107,101,88,0.30);
+    --Q-color:     #7BAFC4;
+    --Q-bg:        rgba(123,175,196,0.10);
+    --Q-border:    rgba(123,175,196,0.30);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--body);
+    font-family: 'Barlow', sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: linear-gradient(160deg, #0a1520 0%, var(--navy-mid) 50%, #0f2035 100%);
+    border-bottom: 2px solid var(--gold-dark);
+    padding: 56px 64px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--copper), var(--gold), transparent);
+  }
+
+  .header-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+
+  .page-header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: 0.01em;
+  }
+
+  .page-header h1 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .header-desc {
+    font-size: 18px;
+    color: var(--body);
+    max-width: 720px;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  .header-tags {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    border: 1px solid var(--navy-border2);
+    padding: 6px 14px;
+    border-radius: 3px;
+  }
+
+  .header-tag strong {
+    color: var(--gold);
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  /* ── LEGEND BAR ── */
+  .legend-bar {
+    background: #091420;
+    border-bottom: 1px solid var(--navy-border);
+    padding: 16px 64px;
+  }
+
+  .legend-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px 28px;
+    flex-wrap: wrap;
+  }
+
+  .legend-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-right: 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    color: var(--muted);
+  }
+
+  .ldot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 56px 64px 80px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 20px;
+    margin-top: 64px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--navy-border2);
+  }
+
+  .sec-head:first-child { margin-top: 0; }
+
+  .sec-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    color: var(--gold-dark);
+    flex-shrink: 0;
+  }
+
+  .sec-head h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .sec-desc {
+    font-size: 17px;
+    color: var(--body);
+    max-width: 900px;
+    line-height: 1.75;
+    margin-bottom: 24px;
+  }
+
+  /* ── NOTE BOX ── */
+  .note-box {
+    background: var(--gold-bg);
+    border: 1px solid var(--gold-dark);
+    border-left: 4px solid var(--gold);
+    border-radius: 4px;
+    padding: 18px 24px;
+    margin-bottom: 32px;
+    font-size: 16px;
+    color: var(--body);
+    line-height: 1.75;
+  }
+
+  .note-box strong { color: var(--gold-light); font-weight: 700; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--navy-border2);
+    border-radius: 6px;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+  }
+
+  /* Group header row */
+  thead tr.grp th {
+    background: #091420;
+    padding: 12px 16px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    border-bottom: 1px solid var(--navy-border);
+    text-align: center;
+  }
+
+  thead tr.grp th.feat-grp {
+    text-align: left;
+    border-right: 2px solid var(--gold-dark);
+    color: var(--dim);
+    width: 210px;
+    min-width: 200px;
+  }
+
+  thead tr.grp th.your-grp {
+    color: var(--gold);
+    border-left: 1px solid var(--gold-dark);
+  }
+
+  thead tr.grp th.comp-grp {
+    color: var(--muted);
+  }
+
+  /* Product name row */
+  thead tr.prod th {
+    background: var(--navy-light);
+    padding: 14px 16px 12px;
+    text-align: center;
+    border-bottom: 2px solid var(--navy-border2);
+    vertical-align: bottom;
+  }
+
+  thead tr.prod th.feat-head {
+    text-align: left;
+    background: #091420;
+    border-right: 2px solid var(--gold-dark);
+  }
+
+  .p-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  .p-your .p-name { color: var(--gold-light); }
+
+  .p-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    display: block;
+  }
+
+  /* Category rows */
+  tbody tr.cat-row td {
+    background: #091420;
+    padding: 10px 16px 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    border-top: 1px solid var(--navy-border2);
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  /* Body rows */
+  tbody tr {
+    border-bottom: 1px solid var(--navy-border);
+    transition: background 0.12s;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.015); }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: top;
+    border-right: 1px solid var(--navy-border);
+    font-size: 17px;
+  }
+
+  tbody td:last-child { border-right: none; }
+
+  td.feat-cell {
+    border-right: 2px solid var(--gold-dark);
+    color: var(--white);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  td.feat-cell .f-sub {
+    display: block;
+    font-size: 17px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  td.val {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  /* SATIC cols tinted */
+  th.satic, td.satic { background: rgba(13,27,46,0.5); }
+
+  /* ── BADGES ── */
+  .b {
+    display: inline-block;
+    padding: 5px 11px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .bH  { background: var(--H-bg);  color: var(--H-color);  border: 1px solid var(--H-border); }
+  .bM  { background: var(--M-bg);  color: var(--M-color);  border: 1px solid var(--M-border); }
+  .bL  { background: var(--L-bg);  color: var(--L-color);  border: 1px solid var(--L-border); }
+  .bNA { background: var(--NA-bg); color: var(--NA-color); border: 1px solid var(--NA-border); }
+  .bQ  { background: var(--Q-bg);  color: var(--Q-color);  border: 1px solid var(--Q-border); }
+
+  .vnote {
+    display: block;
+    font-size: 17px;
+    color: var(--body);
+    margin-top: 6px;
+    line-height: 1.55;
+    text-align: left;
+  }
+
+  .vtxt {
+    font-size: 16px;
+    color: var(--white);
+    line-height: 1.55;
+    display: block;
+    text-align: left;
+  }
+
+  /* ── FACILITY GRID ── */
+  .fac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(620px, 1fr));
+    gap: 22px;
+    margin-top: 12px;
+  }
+
+  .fac-card {
+    background: var(--navy-mid);
+    border: 1px solid var(--navy-border2);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .fac-card:hover { border-color: var(--gold-dark); }
+
+  .fac-top {
+    background: #091420;
+    border-bottom: 1px solid var(--navy-border);
+    padding: 16px 22px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .fac-title-group { display: flex; align-items: baseline; gap: 12px; flex: 1; }
+
+  .fac-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.12em;
+    flex-shrink: 0;
+  }
+
+  .fac-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+
+  .rec-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    padding: 5px 12px;
+    border-radius: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .rBoth  { background: var(--H-bg);  color: var(--H-color);  border: 1px solid var(--H-border); }
+  .rTune  { background: var(--M-bg);  color: var(--M-color);  border: 1px solid var(--M-border); }
+  .rSatic { background: var(--Q-bg);  color: var(--Q-color);  border: 1px solid var(--Q-border); }
+  .rAssess{ background: var(--L-bg);  color: var(--L-color);  border: 1px solid var(--L-border); }
+
+  .fac-body { padding: 18px 22px 20px; }
+
+  .fac-row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 6px 18px;
+    margin-bottom: 10px;
+  }
+
+  .fac-lbl {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 3px;
+    line-height: 1.5;
+  }
+
+  .fac-val {
+    font-size: 16px;
+    color: var(--body);
+    line-height: 1.65;
+  }
+
+  .fac-val strong { color: var(--white); font-weight: 700; }
+
+  .fac-divider {
+    border: none;
+    border-top: 1px solid var(--navy-border2);
+    margin: 14px 0;
+  }
+
+  .fac-vars {
+    font-size: 17px;
+    color: var(--body);
+    line-height: 1.7;
+  }
+
+  .fac-vars strong {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-style: normal;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    border-top: 1px solid var(--navy-border2);
+    padding: 30px 64px;
+    background: #091420;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+    max-width: 700px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 960px) {
+    .page-header, .legend-bar, .main, .page-footer { padding-left: 24px; padding-right: 24px; }
+    .page-header h1 { font-size: 36px; }
+    .fac-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="header-eyebrow">Energy Plus, LLC &nbsp;/&nbsp; Internal Technical Reference</div>
+  <h1>Power Quality Device<br><em>Master Comparison</em></h1>
+  <p class="header-desc">A mechanism-level analysis of electrical filtering, harmonic reduction, power factor correction, and surge protection technologies — mapped across commercial facility types with deployment recommendations.</p>
+  <div class="header-tags">
+    <div class="header-tag"><strong>Document Type</strong>Internal Reference</div>
+    <div class="header-tag"><strong>Status</strong>Working Draft</div>
+    <div class="header-tag"><strong>Stabl Power</strong>Pending Documentation</div>
+    <div class="header-tag"><strong>Version</strong>1.0</div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-bar">
+  <div class="legend-inner">
+    <span class="legend-title">Key</span>
+    <div class="legend-item"><div class="ldot" style="background:var(--H-color)"></div> High / Strong</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--M-color)"></div> Medium / Moderate</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--L-color)"></div> Low / Limited</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--NA-color)"></div> Not Applicable</div>
+    <div class="legend-item"><div class="ldot" style="background:var(--Q-color)"></div> Unknown / Pending Docs</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SECTION 1 -->
+  <div class="sec-head">
+    <span class="sec-num">01</span>
+    <h2>Master Feature &amp; Mechanism Comparison</h2>
+  </div>
+
+  <p class="sec-desc">All products in this table address power quality problems but operate through fundamentally different mechanisms and target different electrical phenomena. Your portfolio products are in the first four columns. Competitor/reference products follow. SATIC's three wire-in sizes share the same core mechanism and differ by capacity and panel configuration only.</p>
+
+  <div class="note-box">
+    <strong>SATIC Size Note:</strong> The Standard Power Perfect Box (60 µF / 18 modules, 120/240V), Super Duty Power Perfect Box (120 µF / 36 modules, 120/240V), and Three-Phase Heavy Duty Box (165 µF, 277/480V) share identical operating principles. Selection is driven by panel voltage and facility load size. The Pure Power Plug-In (ES120) is the same capacitive mechanism in a 120V plug-in form for single-circuit or supplemental deployment.<br><br>
+    <strong>Stabl Power Series Note:</strong> Stabl Power Series 1–3 correspond to Electric Panel Harmonizer Pro Series 1–3. Series 1 (240,000A, up to 100KW) is secondary protection only and must be installed downline from a primary-level unit. Series 2 and 3 (335,000A each, up to 250KW) can stand alone in most commercial environments. Series 4–6 (500K–2M amps, up to 2,500KW) are primary-level IEEE Cat. C main switchgear units available for larger industrial deployments through Energy Plus.
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr class="grp">
+          <th class="feat-grp">Feature / Capability</th>
+          <th class="your-grp" colspan="4">— Your Portfolio —</th>
+          <th class="comp-grp" colspan="4">— Competitor / Reference —</th>
+        </tr>
+        <tr class="prod">
+          <th class="feat-head">
+            <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--dim);letter-spacing:0.15em;text-transform:uppercase;">Feature</span>
+          </th>
+          <th class="p-your">
+            <span class="p-name" style="color:var(--gold-light)">Tune Filter</span>
+            <span class="p-sub">Air-core inductive</span>
+          </th>
+          <th class="p-your">
+            <span class="p-name" style="color:var(--gold-light)">Stabl Power</span>
+            <span class="p-sub">Non-degrading TVSS · Series 1–3</span>
+          </th>
+          <th class="p-your satic">
+            <span class="p-name" style="color:var(--gold-light)">SATIC Plug-In</span>
+            <span class="p-sub">ES120 · 120V outlet</span>
+          </th>
+          <th class="p-your satic">
+            <span class="p-name" style="color:var(--gold-light)">SATIC Wire-In</span>
+            <span class="p-sub">Std · SD · 3-Phase</span>
+          </th>
+          <th>
+            <span class="p-name" style="color:var(--body)">KVAR</span>
+            <span class="p-sub">Capacitive PFC</span>
+          </th>
+          <th>
+            <span class="p-name" style="color:var(--body)">SurgeX</span>
+            <span class="p-sub">Series mode SPD</span>
+          </th>
+          <th>
+            <span class="p-name" style="color:var(--body)">Panamax</span>
+            <span class="p-sub">AV conditioning</span>
+          </th>
+          <th>
+            <span class="p-name" style="color:var(--body)">Zero Surge</span>
+            <span class="p-sub">Series mode SPD</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- MECHANISM -->
+        <tr class="cat-row"><td colspan="9">Mechanism of Action</td></tr>
+
+        <tr>
+          <td class="feat-cell">Core Technology<span class="f-sub">Primary operating principle</span></td>
+          <td class="val"><span class="vtxt">Air-core inductive harmonic trap on neutral bus</span></td>
+          <td class="val"><span class="vtxt">Non-degrading TVSS with proprietary TransformancE™ quantum photonic molecular treatment. Tiered architecture: Series 1–3 (secondary) through Series 4–6 (primary). Engineered by sole-source DoD/DoE contractor.</span></td>
+          <td class="val satic"><span class="vtxt">Metalized film capacitor bank (passive PFC)</span></td>
+          <td class="val satic"><span class="vtxt">Metalized film capacitor bank (passive PFC)</span></td>
+          <td class="val"><span class="vtxt">Capacitor bank (passive PFC)</span></td>
+          <td class="val"><span class="vtxt">Series impedance surge suppression</span></td>
+          <td class="val"><span class="vtxt">RC filter + MOV surge suppression</span></td>
+          <td class="val"><span class="vtxt">Series mode — no sacrificial MOV components</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Installation Point<span class="f-sub">Where in the electrical system</span></td>
+          <td class="val"><span class="vtxt">Neutral bus, load panel — parallel connection</span></td>
+          <td class="val"><span class="vtxt">Main service entry (primary) or downline sub-panels (secondary). Close-coupled to switchgear for fastest response time.</span></td>
+          <td class="val satic"><span class="vtxt">120V wall outlet — plug-in, no electrician</span></td>
+          <td class="val satic"><span class="vtxt">Panel wire-in (120/240V or 277/480V)</span></td>
+          <td class="val"><span class="vtxt">Panel wire-in, parallel</span></td>
+          <td class="val"><span class="vtxt">Inline series — outlet or rack mount</span></td>
+          <td class="val"><span class="vtxt">Outlet or rack mount</span></td>
+          <td class="val"><span class="vtxt">Inline series — outlet or panel level</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Passive vs. Active<span class="f-sub">Requires power or control logic?</span></td>
+          <td class="val"><span class="vtxt">Passive</span></td>
+          <td class="val"><span class="vtxt">Passive — no power draw, no control logic required</span></td>
+          <td class="val satic"><span class="vtxt">Passive</span></td>
+          <td class="val satic"><span class="vtxt">Passive</span></td>
+          <td class="val"><span class="vtxt">Passive</span></td>
+          <td class="val"><span class="vtxt">Passive</span></td>
+          <td class="val"><span class="vtxt">Passive</span></td>
+          <td class="val"><span class="vtxt">Passive</span></td>
+        </tr>
+
+        <!-- POWER QUALITY -->
+        <tr class="cat-row"><td colspan="9">Power Quality Functions</td></tr>
+
+        <tr>
+          <td class="feat-cell">THD Reduction<span class="f-sub">Harmonic current interception</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Primary function — inductors intercept harmonic currents on neutral before they circulate through wiring</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">AST (Active Sine-Tracing) filtering on Series 3 specifically — reduces harmonics and noise to protect sensitive automation and digital systems</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Secondary — capacitors attenuate some harmonic content as a byproduct of PFC function</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Secondary — larger bank improves attenuation modestly</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Secondary to PFC — same limitation as SATIC</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Not designed for harmonic filtering</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Minimal harmonic filtering capability</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Not a harmonic filter</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Power Factor Correction<span class="f-sub">Reactive power compensation</span></td>
+          <td class="val"><span class="b bM">INDIRECT</span><span class="vnote">THD reduction improves apparent PF as a secondary effect — not direct capacitive PFC</span></td>
+          <td class="val"><span class="b bM">INDIRECT</span><span class="vnote">Transient removal reduces meter-visible peaks — optimizes apparent power indirectly rather than through capacitive PFC</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Primary function — 6 PFC modules / 20 µF reactive bank</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Primary function — 18 to 36 PFC modules scaled by unit size</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Primary function — same capacitive mechanism as SATIC</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Minor line conditioning only</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">EMI / RFI Attenuation<span class="f-sub">High-frequency line noise reduction</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Inductive filtering reduces some conducted noise as a secondary effect</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Series 3 AST network explicitly rated for EMI/RFI filtration protecting complex computers, automation circuits, and life-support systems</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Stated spec: 0–50 dB attenuation from 10 kHz to 100 MHz</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Stated spec: 0–50 dB attenuation from 10 kHz to 100 MHz</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Some attenuation as secondary function of capacitor bank</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core function — designed for sensitive IT and AV electronics</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core function — AV and audio equipment focus</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Some attenuation via series impedance</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Voltage Moderation<span class="f-sub">Passive stabilization of fluctuations</span></td>
+          <td class="val"><span class="b bL">LOW</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Transient removal at point-of-entry eliminates peaks and dips — electrical devices operate in closer to steady-state, reducing compensatory current draw</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Passive — stated feature, not active regulation</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Passive — stated feature, not active regulation</span></td>
+          <td class="val"><span class="b bM">MOD</span></td>
+          <td class="val"><span class="b bL">LOW</span></td>
+          <td class="val"><span class="b bL">LOW</span></td>
+          <td class="val"><span class="b bL">LOW</span></td>
+        </tr>
+
+        <!-- SURGE -->
+        <tr class="cat-row"><td colspan="9">Surge &amp; Transient Protection</td></tr>
+
+        <tr>
+          <td class="feat-cell">Surge Protection<span class="f-sub">Transient voltage clamping capacity</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Not a feature of the Tune filter</span></td>
+          <td class="val"><span class="b bH">HIGHEST</span><span class="vnote">Series 1: 240,000A · Series 2: 335,000A · Series 3: 335,000A · Series 4: 500,000A · Series 5: 1,000,000A · Series 6: 2,000,000A. Non-degrading lifetime capacity. Engineered by sole-source DoD/DoE contractor.</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">6,500A peak / 1,300 J per circuit — single phase L-N protection</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Std/SD: 6,500A / 1,300 J tri-circuit. 3-Phase HD: 10,000A / 370 J per circuit.</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Not a primary feature of KVAR products</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core function — series mode, non-degrading, no MOV wear</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">MOV-based — degrades incrementally with each surge event</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core function — series mode, non-degrading, no sacrificial components</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Surge Mechanism Type<span class="f-sub">How the transient is handled</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="vtxt">Non-degrading TVSS with TransformancE™ proprietary treatment. Single-element (SE) design on Series 2–4, Dual-Triangle on Series 5, Quad-Triangle on Series 6. No sacrificial components — lifetime rated capacity.</span></td>
+          <td class="val satic"><span class="vtxt">MOV / TVS — sacrificial components that degrade over repeated surge events</span></td>
+          <td class="val satic"><span class="vtxt">MOV / TVS — sacrificial components. Super Duty unit rated to self-destruct on extreme event (replaced under warranty).</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="vtxt">Series mode — absorbs and cancels transient energy, no sacrificial components, non-degrading</span></td>
+          <td class="val"><span class="vtxt">MOV-based — sacrificial, degrades over time</span></td>
+          <td class="val"><span class="vtxt">Series mode — non-degrading, no MOV, no sacrificial parts</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">EMP Shielding<span class="f-sub">Electromagnetic pulse protection</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bQ">?</span><span class="vnote">Not explicitly stated in current documentation — confirm with manufacturer</span></td>
+          <td class="val satic"><span class="b bNA">N/A</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">Stated feature on Gen III Super Duty Wire-In only</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <!-- SAVINGS -->
+        <tr class="cat-row"><td colspan="9">Energy Savings Applicability</td></tr>
+
+        <tr>
+          <td class="feat-cell">kWh Savings — Any Meter<span class="f-sub">Real watt reduction on flat-rate bills</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Harmonic I²R losses are real watts consumed — visible on any meter regardless of billing structure</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Three confirmed pathways: (1) meter no longer reads transient peaks as consumption, (2) devices in steady-state draw less current, (3) reduced motor heat means less wasted energy. All three are visible on any kWh meter.</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">PFC reduces reactive current — this is not metered on residential or flat-rate commercial accounts</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">Same fundamental limitation — kVA billing required for bill savings</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Identical PFC limitation to SATIC</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Not a savings product</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Not a savings product</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Not a savings product</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Demand Charge Reduction<span class="f-sub">kVA-billed commercial accounts only</span></td>
+          <td class="val"><span class="b bM">INDIRECT</span><span class="vnote">THD reduction lowers apparent kVA as a secondary effect — not direct PFC</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Transient removal reduces apparent power peaks at the meter — indirect demand charge benefit on kVA-billed accounts</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Primary savings mechanism — effective wherever kVA demand is billed</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Primary savings mechanism — strongest on 3-phase industrial accounts with PF penalty clauses</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Same PFC mechanism — valid wherever kVA demand is billed</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Residential Bill Savings<span class="f-sub">Flat-rate kWh billed accounts</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Real but modest — proportional to how much harmonic distortion was present before installation</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">All three savings pathways apply on any meter — transient peak removal, steady-state device operation, and motor heat reduction are visible on residential kWh meters</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">PFC mechanism does not move a kWh-only meter — savings are minimal on residential accounts</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">Same limitation as plug-in</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Same PFC limitation</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <!-- EQUIPMENT PROTECTION -->
+        <tr class="cat-row"><td colspan="9">Equipment Protection &amp; Lifespan</td></tr>
+
+        <tr>
+          <td class="feat-cell">Motor / Compressor Longevity<span class="f-sub">Reduces thermal degradation of windings</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Harmonic reduction directly lowers winding temperature — every 10°C reduction roughly doubles motor insulation life</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Steady-state operation confirmed in manufacturer documentation — motors not compensating for dirty power run cooler, draw less current, and last longer. Heat reduction = wasted energy recovered.</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Reduced reactive current lowers conductor heating — real but smaller effect than harmonic reduction</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Larger reactive bank provides stronger effect — still secondary to harmonic approach</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Same PFC benefit as SATIC</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Protects against transients — not thermal wear</span></td>
+          <td class="val"><span class="b bL">LOW</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Protects against transients — not thermal wear</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Electronics / Controls Longevity<span class="f-sub">Protects sensitive control boards and switching supplies</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Cleaner waveform reduces stress on power supplies and control electronics — real but not primary function</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Non-degrading surge capacity rated up to 2M amps eliminates single-event catastrophic failure. Series 3 AST network specifically engineered for complex digital controls and life-support systems.</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">EMI/RFI filtration plus surge protection addresses both noise and transient damage vectors</span></td>
+          <td class="val satic"><span class="b bH">HIGH</span><span class="vnote">Same — larger coverage area at panel level, stronger surge capacity</span></td>
+          <td class="val"><span class="b bM">MOD</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core purpose — designed specifically for sensitive IT and AV equipment</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core purpose — AV and professional audio focus</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Core purpose — non-degrading protection for sensitive electronics</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Transformer Core Protection<span class="f-sub">Reduces eddy current and hysteresis losses in iron cores</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Harmonic reduction directly reduces iron core losses — real watt savings from reduced thermal losses in cores</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Steady-state operation reduces stress on transformer windings and core — indirect benefit via transient removal rather than direct harmonic filtering</span></td>
+          <td class="val satic"><span class="b bM">MOD</span></td>
+          <td class="val satic"><span class="b bM">MOD</span></td>
+          <td class="val"><span class="b bM">MOD</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <!-- CERTIFICATIONS -->
+        <tr class="cat-row"><td colspan="9">Certifications &amp; Compliance</td></tr>
+
+        <tr>
+          <td class="feat-cell">UL Listed</td>
+          <td class="val"><span class="b bH">YES</span></td>
+          <td class="val"><span class="b bQ">?</span><span class="vnote">Not confirmed in current documentation — confirm with manufacturer</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">E337361 — Closed Energy Management Equipment</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">E337361 / CSA joint listing — Open Energy Management Equipment</span></td>
+          <td class="val"><span class="b bQ">?</span></td>
+          <td class="val"><span class="b bH">YES</span></td>
+          <td class="val"><span class="b bH">YES</span></td>
+          <td class="val"><span class="b bH">YES</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">BABA / Made in USA<span class="f-sub">Federal infrastructure procurement compliance</span></td>
+          <td class="val"><span class="b bQ">?</span><span class="vnote">Confirm with Tune</span></td>
+          <td class="val"><span class="b bH">STRONG</span><span class="vnote">DoD and DoE sole-source engineering credentials are the strongest federal procurement reference in the portfolio. BABA documentation status pending confirmation.</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">BABA attested February 2025 — manufactured Missoula, MT</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">BABA attested February 2025 — all three wire-in sizes covered</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bQ">?</span></td>
+          <td class="val"><span class="b bQ">?</span></td>
+          <td class="val"><span class="b bQ">?</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Third-Party Case Study Data<span class="f-sub">Independent verified performance evidence beyond testimonials</span></td>
+          <td class="val"><span class="b bH">HIGH</span><span class="vnote">Most robust third-party case study library in the Energy Plus portfolio — 20+ studies across nine sectors</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">DoD and DoE real-world references — limited polished documentation currently available</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">Testimonials only — no IPMVP-standard measurement and verification data</span></td>
+          <td class="val satic"><span class="b bL">LOW</span><span class="vnote">Testimonials only — same limitation as plug-in</span></td>
+          <td class="val"><span class="b bL">LOW</span><span class="vnote">Primarily residential testimonials — limited commercial M&amp;V</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Equipment protection product — savings claims not applicable</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+        <!-- DEPLOYMENT -->
+        <tr class="cat-row"><td colspan="9">Deployment Characteristics</td></tr>
+
+        <tr>
+          <td class="feat-cell">Installation Complexity</td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Licensed electrician required — neutral bus connection, approximately 30–60 minutes</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Licensed electrician required — close-coupled wire-in at main switchgear or sub-panel. Primary and secondary units installed at different points in the system.</span></td>
+          <td class="val satic"><span class="b bH">EASY</span><span class="vnote">Plug-in to any 120V outlet — no electrician required</span></td>
+          <td class="val satic"><span class="b bM">MOD</span><span class="vnote">Licensed electrician required — panel wire-in, approximately 30–45 minutes</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Panel wire-in — licensed electrician recommended</span></td>
+          <td class="val"><span class="b bH">EASY</span><span class="vnote">Inline or outlet mount — plug-in deployment</span></td>
+          <td class="val"><span class="b bH">EASY</span><span class="vnote">Outlet or rack mount</span></td>
+          <td class="val"><span class="b bH">EASY</span><span class="vnote">Inline or outlet mount</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Known Installation Constraints<span class="f-sub">Conditions that limit effectiveness</span></td>
+          <td class="val"><span class="vtxt">Transformer with impedance above 4% within 10 feet of sub-panel blocks effect. Neutral bus required at installation panel.</span></td>
+          <td class="val"><span class="vtxt">Series 1 is secondary protection only — must be installed downline from a primary-level Series 4–6 unit. Series 2 and 3 can stand alone in typical Category B environments. Sizing to facility load capacity is critical.</span></td>
+          <td class="val satic"><span class="vtxt">Single phase only — one plug-in needed per phase for full circuit coverage</span></td>
+          <td class="val satic"><span class="vtxt">Correct neutral bar vs. ground bar installation is critical. Unit size must match load. Electrician unfamiliarity is common.</span></td>
+          <td class="val"><span class="vtxt">kVA billing required for any bill savings. Sizing to load is critical for effectiveness.</span></td>
+          <td class="val"><span class="vtxt">Downstream of installation point only — does not protect panel or upstream equipment</span></td>
+          <td class="val"><span class="vtxt">Point-of-use only — no whole-facility coverage from a single unit</span></td>
+          <td class="val"><span class="vtxt">Downstream protection only — same limitation as SurgeX</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Three-Phase Commercial Coverage</td>
+          <td class="val"><span class="b bH">YES</span><span class="vnote">Single unit covers all three phases via neutral bus installation</span></td>
+          <td class="val"><span class="b bH">YES</span><span class="vnote">Series 4–6 rated for IEEE Cat. C Main Switch Gear — full three-phase primary protection up to 2,500KW facility load</span></td>
+          <td class="val satic"><span class="b bNA">N/A</span><span class="vnote">Single phase 120V plug-in only</span></td>
+          <td class="val satic"><span class="b bH">YES</span><span class="vnote">277/480V Three-Phase Heavy Duty unit specifically designed for commercial/industrial</span></td>
+          <td class="val"><span class="b bH">YES</span><span class="vnote">Three-phase commercial products available</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Commercial product lines available</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Residential and AV focus — not a commercial facility product</span></td>
+          <td class="val"><span class="b bM">MOD</span><span class="vnote">Commercial product lines available</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Approximate Price Range<span class="f-sub">Retail / list pricing reference</span></td>
+          <td class="val"><span class="vtxt">Contact Energy Plus for pricing</span></td>
+          <td class="val"><span class="vtxt">Contact Energy Plus for pricing — tiered by series and facility load capacity</span></td>
+          <td class="val satic"><span class="vtxt">$209 retail (ES120 plug-in)</span></td>
+          <td class="val satic"><span class="vtxt">~$800–900 (Standard) · $1,895 (Super Duty) · Contact for 3-Phase pricing</span></td>
+          <td class="val"><span class="vtxt">~$300–900 residential range; commercial varies by sizing</span></td>
+          <td class="val"><span class="vtxt">~$200–2,000+ depending on model and application</span></td>
+          <td class="val"><span class="vtxt">~$100–500 consumer through professional models</span></td>
+          <td class="val"><span class="vtxt">~$150–1,000 depending on model</span></td>
+        </tr>
+
+        <tr>
+          <td class="feat-cell">Primary / Secondary Tiering<span class="f-sub">Layered protection architecture across facility</span></td>
+          <td class="val"><span class="b bNA">N/A</span><span class="vnote">Single product — no tiered architecture</span></td>
+          <td class="val"><span class="b bH">UNIQUE</span><span class="vnote">Only product in this comparison with a defined primary/secondary architecture. Series 1–3 (secondary, downline circuits), Series 4–6 (primary, main switchgear). Larger facilities deploy both tiers simultaneously for layered protection. No other product in this table offers this.</span></td>
+          <td class="val satic"><span class="b bNA">N/A</span></td>
+          <td class="val satic"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+          <td class="val"><span class="b bNA">N/A</span></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="sec-head">
+    <span class="sec-num">02</span>
+    <h2>Facility-Type Deployment Recommendations</h2>
+  </div>
+
+  <p class="sec-desc">Each profile identifies the dominant power quality problems present, the primary recommendation, the role of each device, and the variables that would change the recommendation. Recommendations now reflect a three-device framework: Tune (harmonic reduction), Stabl Power (primary surge protection and transient elimination), and SATIC (power factor correction and demand charge reduction). Based on harmonic load density, typical billing structure, equipment value at stake, and transient risk.</p>
+
+  <div class="fac-grid">
+
+    <!-- 1 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">01</span>
+          <span class="fac-name">Cold Storage / Refrigerated Warehouse</span>
+        </div>
+        <span class="rec-pill rBoth">Both Devices</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — VFDs on every compressor and fan motor, lighting controls throughout</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — virtually always at this scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>High</strong> — compressor failure is catastrophic; replacement costs are substantial and downtime is revenue-critical</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune + Stabl Power + SATIC Wire-In (3-phase)</strong> — strongest combined case in the entire facility list</span></div>
+        <div class="fac-row"><span class="fac-lbl">Tune Role</span><span class="fac-val">Addresses VFD harmonics that are degrading compressor motor insulation. Direct kWh savings from I²R loss reduction on any meter.</span></div>
+        <div class="fac-row"><span class="fac-lbl">Stabl Role</span><span class="fac-val">Primary surge protection at main service entry — non-degrading, lifetime rated. Eliminates transient peaks the meter reads as consumption. Series 2 or 3 standalone is sufficient for most cold storage facilities; Series 4+ for very large operations.</span></div>
+        <div class="fac-row"><span class="fac-lbl">SATIC Role</span><span class="fac-val">Demand charge reduction on kVA-billed account. Supplemental secondary surge and EMI filtration downstream.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>If facility is smaller and flat-rate billed, Tune alone is the ROI driver. If budget is constrained, prioritize Tune first — compressor lifespan argument is the strongest equipment protection case in this category.</div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">02</span>
+          <span class="fac-name">Supermarket / Grocery</span>
+        </div>
+        <span class="rec-pill rBoth">Both Devices</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — VFD-driven refrigeration cases, LED lighting throughout, switching supplies in POS and display systems</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at grocery scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>High</strong> — refrigeration compressors, deli and prepared food equipment, HVAC</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune + SATIC Wire-In</strong> — second strongest combined case; nearly identical profile to cold storage</span></div>
+        <div class="fac-row"><span class="fac-lbl">Note</span><span class="fac-val">Grocery stores are among the highest harmonic-density commercial environments due to simultaneous VFD load from dozens of refrigeration cases running at all times.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Smaller independent locations may be flat-rate billed — Tune primary in that scenario. Multi-site chains: pilot one location with full M&amp;V then portfolio roll-out.</div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">03</span>
+          <span class="fac-name">Convenience Store / Fuel</span>
+        </div>
+        <span class="rec-pill rTune">Tune Primary</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium-High</strong> — refrigeration cases, LED lighting, fuel pump electronics</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>Variable</strong> — smaller c-stores often flat-rate; larger chain accounts demand-metered</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium</strong> — refrigeration and fuel pump electronics. Outdoor exposure increases transient risk from lightning.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune primary.</strong> Add SATIC if account is demand-metered. Surge protection argument strengthened by outdoor exposure and pump motor cycling.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Franchise chains (7-Eleven, Casey's, Wawa) are almost always demand-metered at the corporate account level — both devices warranted. Confirm billing structure before quoting.</div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">04</span>
+          <span class="fac-name">Hospitality / Hotel</span>
+        </div>
+        <span class="rec-pill rBoth">Both Devices</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium</strong> — distributed switching supplies in every room, LED lighting, laundry and kitchen equipment</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at full-service hotel scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium-High</strong> — HVAC, laundry, kitchen equipment, elevators, AV systems</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Both for full-service and branded hotels.</strong> Tune primary for smaller independent properties.</span></div>
+        <div class="fac-row"><span class="fac-lbl">Note</span><span class="fac-val">Hundreds of room-level switching supplies and phone chargers create a distributed harmonic load that accumulates significantly at the panel even when each room's individual load appears small.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Room count, property age, and whether VFDs are present on HVAC and elevator systems. Older properties with legacy electrical infrastructure benefit more from the surge protection layer.</div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">05</span>
+          <span class="fac-name">Healthcare</span>
+        </div>
+        <span class="rec-pill rBoth">All Three — Lead Equipment Protection</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — medical imaging equipment, UPS systems, surgical LED lighting, VFDs on HVAC</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at healthcare facility scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Very High</strong> — imaging equipment can exceed seven figures; control boards in life safety systems are irreplaceable on short notice</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune + Stabl Power + SATIC — lead with equipment protection.</strong> Generator transfer switching creates severe transients. Harmonic distortion degrades sensitive imaging power supplies as a chronic liability. Stabl Series 3 with AST filtering is specifically engineered for life-support and complex digital systems.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Facility type matters within healthcare. Small clinic: Tune primary. Hospital or imaging center: both devices justified on equipment protection grounds alone, before calculating energy ROI.</div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">06</span>
+          <span class="fac-name">Fitness / Gym</span>
+        </div>
+        <span class="rec-pill rTune">Tune Primary</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium</strong> — treadmill and elliptical VFDs, LED lighting, audio and AV systems</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>Variable</strong> — larger chains demand-metered; boutique and studio fitness often flat-rate</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium</strong> — cardio equipment motor replacement is a recurring and expensive maintenance cost for facility operators</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune primary.</strong> Treadmill motor lifespan extension is a compelling ROI argument that works on any billing structure. Add SATIC if the account is demand-metered.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Large franchise gyms (Planet Fitness, LA Fitness) at scale are demand-metered and warrant both devices. Studio fitness with minimal cardio equipment has a weaker overall case.</div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">07</span>
+          <span class="fac-name">Education (K-12 / Higher Ed)</span>
+        </div>
+        <span class="rec-pill rBoth">Both Devices</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — computer labs, AV systems, LED retrofits, VFDs on newer HVAC, device charging carts</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at institutional scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium-High</strong> — IT infrastructure, HVAC, and laboratory and research equipment at higher ed level</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Both.</strong> Tune is your active DSA-submission product for this vertical. SATIC adds the demand charge reduction and surge protection layer for older building electrical infrastructure.</span></div>
+        <div class="fac-row"><span class="fac-lbl">Note</span><span class="fac-val">At higher ed, lab and research equipment elevates the equipment protection argument substantially. Older institutional buildings with aging infrastructure increase transient risk.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Building type within campus matters significantly. Admin and classroom buildings: both devices. Residence halls: Tune on common area panels, SATIC less compelling on individual room circuits.</div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">08</span>
+          <span class="fac-name">Multifamily / Apartments</span>
+        </div>
+        <span class="rec-pill rTune">Tune — Common Area</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium</strong> — distributed switching supplies, LED lighting, in-unit appliances, elevator VFDs on common systems</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>Split</strong> — individual unit meters are almost always flat-rate kWh; common area service may be demand-metered</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium</strong> — elevators, common area HVAC, laundry equipment</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune on common area panels.</strong> SATIC's demand mechanism does not apply to individual unit meters billed at flat-rate kWh. Elevator and laundry VFD harmonics make Tune effective on the master service meter.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Master-metered properties where the owner pays all electricity change the equation significantly — full both-device case applies to the master meter. If common area service is confirmed demand-metered, add SATIC.</div>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">09</span>
+          <span class="fac-name">Quick-Serve Restaurant</span>
+        </div>
+        <span class="rec-pill rTune">Tune Primary</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium-High</strong> — LED lighting, variable speed hood fans, refrigeration, POS switching supplies</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>Variable</strong> — many smaller QSR locations are flat-rate; larger footprints and chain accounts are demand-metered</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium-High</strong> — fryers, refrigeration, HVAC, hood systems. Equipment downtime is directly revenue-critical.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune primary — this is your core vertical.</strong> Tune stacks directly with the HVAC Optimizer: Optimizer reduces compressor cycling, Tune reduces harmonic wear on the same equipment. Strong integrated pitch.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Multi-site operators at chain account level are often demand-metered even on smaller footprint locations. Confirm billing structure and add SATIC where demand billing is confirmed.</div>
+      </div>
+    </div>
+
+    <!-- 10 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">10</span>
+          <span class="fac-name">Commercial / Office</span>
+        </div>
+        <span class="rec-pill rBoth">Both (Mid-Large)</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — switching power supply density from workstations rivals industrial settings; server rooms, LED retrofits, VFDs on HVAC</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at commercial office scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium-High</strong> — IT infrastructure, HVAC, and elevators in multi-story buildings</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Both for mid-to-large office buildings.</strong> Tune primary for small single-tenant offices on flat-rate accounts.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Lease structure matters. Owner-occupied or NNN leases where owner pays utilities: full both-device case. Gross leases where tenant pays electricity: Tune lifespan argument still applies to building systems even though the energy savings accrue to the tenant.</div>
+      </div>
+    </div>
+
+    <!-- 11 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">11</span>
+          <span class="fac-name">Retail (Big-Box / Strip)</span>
+        </div>
+        <span class="rec-pill rBoth">Both (Big-Box)</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium-High</strong> — LED lighting at scale is a major harmonic source at big-box fixture counts; POS systems, HVAC, refrigeration where present</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>High for big-box</strong> — always demand-metered. <strong>Variable for strip</strong> — anchor tenants usually demand-metered; smaller inline tenants often flat-rate.</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium</strong> — HVAC and lighting systems primary. Refrigeration where present.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Both for big-box.</strong> Tune primary for smaller strip tenants. LED harmonic argument is especially strong at big-box fixture counts in the thousands.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>LED retrofit recency matters — older LED retrofits using lower-quality drivers often have worse THD than newer installations with better built-in power factor. Confirm this in the site assessment.</div>
+      </div>
+    </div>
+
+    <!-- 12 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">12</span>
+          <span class="fac-name">Mixed / Other</span>
+        </div>
+        <span class="rec-pill rAssess">Assess First</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Profile</span><span class="fac-val">Too variable to generalize. Use the assessment framework from the other 13 categories as your primary tool.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Default Start</span><span class="fac-val"><strong>Tune as the conservative default</strong> pending billing structure and load profile confirmation. Tune has the broadest applicability across billing structures and is rarely the wrong starting recommendation.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Key questions</strong>What are the dominant load types? Is the account demand-metered or flat-rate kWh? What is the equipment value at stake? Map answers to the nearest comparable category in this document.</div>
+      </div>
+    </div>
+
+    <!-- 13 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">13</span>
+          <span class="fac-name">Warehouse / Distribution</span>
+        </div>
+        <span class="rec-pill rBoth">Both — Underrated Case</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>Medium-High</strong> — LED high-bay lighting at scale, conveyor VFDs, dock door motors, forklift charging stations</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always at distribution center scale</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>Medium-High</strong> — conveyor systems, dock equipment, refrigerated zones. Large motor switching creates significant internal transients.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>Tune + Stabl + SATIC — underrated combined case.</strong> Forklift charging stations are major harmonic sources commonly overlooked. Motor-start transients from dock and conveyor equipment are real. Stabl at main service entry eliminates transient peaks that would otherwise cycle through the entire facility.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Forklift fleet size drives harmonic density significantly. Cold storage zones within the warehouse elevate the compressor lifespan argument further. E-commerce fulfillment centers with high conveyor density are among the strongest combined-device cases in this category.</div>
+      </div>
+    </div>
+
+    <!-- 14 -->
+    <div class="fac-card">
+      <div class="fac-top">
+        <div class="fac-title-group">
+          <span class="fac-num">14</span>
+          <span class="fac-name">Industrial / Manufacturing</span>
+        </div>
+        <span class="rec-pill rBoth">Both — SATIC Strongest Here</span>
+      </div>
+      <div class="fac-body">
+        <div class="fac-row"><span class="fac-lbl">Harmonic Density</span><span class="fac-val"><strong>High</strong> — VFDs on virtually every motor, welding equipment, induction heating, CNC machines</span></div>
+        <div class="fac-row"><span class="fac-lbl">Billing Structure</span><span class="fac-val"><strong>kVA demand-metered</strong> — always. Often with explicit power factor penalty clauses written into the utility contract.</span></div>
+        <div class="fac-row"><span class="fac-lbl">Equipment Risk</span><span class="fac-val"><strong>High</strong> — CNC machines, precision motors, drives, tooling equipment. Welding and large motor switching creates severe internal transients.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-row"><span class="fac-lbl">Recommendation</span><span class="fac-val"><strong>All three — specify Stabl Series 5 or 6 + SATIC Three-Phase HD + Tune.</strong> Industrial is the strongest environment for all three devices simultaneously. Stabl primary protection at main switchgear, SATIC for demand charge reduction, Tune for harmonic current elimination. Explicit PF penalty clauses make SATIC ROI immediately calculable.</span></div>
+        <hr class="fac-divider">
+        <div class="fac-vars"><strong>Variables</strong>Whether the utility contract includes an explicit PF penalty clause is the single biggest variable — if yes, SATIC ROI is immediate and precisely calculable. Welding intensity and motor switching frequency drive the transient risk level and surge protection urgency.</div>
+      </div>
+    </div>
+
+  </div><!-- end fac-grid -->
+
+</div><!-- end main -->
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <div class="footer-brand">Energy Plus, LLC &nbsp;/&nbsp; Independent Energy Solutions Partner</div>
+  <div class="footer-note">Internal reference document. Competitor product data based on publicly available specifications and general engineering knowledge. Stabl Power data pending internal documentation. All facility recommendations are generalizations subject to site-specific assessment. Energy Plus verification methodology understates rather than overstates client benefit by design.</div>
+</div>
+
+</body>
+</html>
